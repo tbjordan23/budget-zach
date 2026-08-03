@@ -241,7 +241,7 @@
   <div class="topbar">
     <div>
       <p class="eyebrow">Jordan Finance</p>
-      <h1>Shannon and Zach Budget</h1>
+      <h1>Zach and Shannon Budget</h1>
       <p class="sub">Shared with everyone who has this page — edit any number, it saves automatically.</p>
     </div>
     <div class="actions">
@@ -292,13 +292,11 @@
   <div class="grid">
     <div class="card">
       <div class="card-head"><h2>1st payment</h2><span class="total" id="p1TotalTop"></span></div>
-      <p class="sub" id="p1Remaining"></p>
       <div class="flow" id="p1Flow"></div>
       <div id="p1Rows"></div>
     </div>
     <div class="card">
       <div class="card-head"><h2>2nd payment</h2><span class="total" id="p2TotalTop"></span></div>
-      <p class="sub" id="p2Remaining"></p>
       <div class="flow" id="p2Flow"></div>
       <div id="p2Rows"></div>
     </div>
@@ -357,8 +355,12 @@ const defaultState = {
     {label:'Net Paycheck-Shannon (Bi-weekly)', val:0, kind:'netPaycheck'},
     {label:'Average Net Commission (Biweekly)', val:0, kind:'netPaycheck'},
   ],
-  p1: [],
-  p2: [],
+  p1: [
+    {label:'Extra Cash', val:0, cat:'everyday', kind:'extraSpending', locked:true},
+  ],
+  p2: [
+    {label:'Extra Cash', val:0, cat:'everyday', kind:'extraSpending', locked:true},
+  ],
   subs: []
 };
 
@@ -551,28 +553,6 @@ function recalcTotals(){
   document.querySelector('#p2Rows .row.total .amt-wrap').textContent = fmt(p2t);
   document.getElementById('p2TotalTop').textContent = fmt(netPaycheck);
   document.querySelector('#subsRows .row.total .amt-wrap').textContent = fmt(subT);
-
-  const p1LeftEl = document.getElementById('p1Remaining');
-  const p2LeftEl = document.getElementById('p2Remaining');
-  // Extra Spending now soaks up exactly what's left of the paycheck, so this
-  // line would always read $0 once the auto-calc is active — only show it
-  // for years still relying on a manually-entered Extra Spending amount.
-  if(p1ExtraItem){
-    p1LeftEl.style.display = 'none';
-  } else {
-    const p1Left = netPaycheck - p1t + extraMonthly;
-    p1LeftEl.style.display = '';
-    p1LeftEl.textContent = 'Left after payment: ' + fmt(p1Left);
-    p1LeftEl.style.color = p1Left < 0 ? 'var(--warn)' : '';
-  }
-  if(p2ExtraItem){
-    p2LeftEl.style.display = 'none';
-  } else {
-    const p2Left = netPaycheck - p2t;
-    p2LeftEl.style.display = '';
-    p2LeftEl.textContent = 'Left after payment: ' + fmt(p2Left);
-    p2LeftEl.style.color = p2Left < 0 ? 'var(--warn)' : '';
-  }
 
   renderFlow(document.getElementById('p1Flow'), p1SubsLinkItem ? state.p1 : [...state.p1, {cat:'subs', val:subT}], p1t);
   renderFlow(document.getElementById('p2Flow'), state.p2, p2t);
