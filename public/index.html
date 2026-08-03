@@ -93,7 +93,12 @@
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem;}
   @media (max-width:820px){.stats{grid-template-columns:repeat(2,1fr);}}
   @media (max-width:720px){.grid{grid-template-columns:1fr;}}
-  @media (max-width:480px){.stats{grid-template-columns:1fr;}}
+  @media (max-width:480px){
+    .stats{grid-template-columns:1fr;}
+    .topbar{flex-direction:column;align-items:flex-start;}
+    .topbar .actions{width:100%;}
+    h1{font-size:26px;}
+  }
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.3rem 1.4rem 1.1rem;}
   .card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.9rem;}
@@ -509,7 +514,7 @@ function render(){
 
 function recalcTotals(){
   const subT = subsTotal();
-  const netPaycheck = state.income.filter(i => i.kind === 'netPaycheck').reduce((s,i)=>s+i.val, 0);
+  const netPaycheck = state.income.filter(i => /net/i.test(i.label || '')).reduce((s,i)=>s+i.val, 0);
   const extraMonthly = state.extraMonthly || 0;
 
   // Extra Spending is auto-derived as whatever's left of the net paycheck
@@ -962,7 +967,7 @@ function computeYearlySummary(data){
 
   const p1 = (Array.isArray(data.p1) ? data.p1 : []).map(i => ({...i}));
   const p2 = (Array.isArray(data.p2) ? data.p2 : []).map(i => ({...i}));
-  const netPaycheck = income.filter(i => i.kind === 'netPaycheck').reduce((s,i)=>s+i.val, 0);
+  const netPaycheck = income.filter(i => /net/i.test(i.label || '')).reduce((s,i)=>s+i.val, 0);
 
   const p1SubsLinkItem = p1.find(i => i.kind === 'subsLink');
   const p1ExtraItem = p1.find(i => i.kind === 'extraSpending');
